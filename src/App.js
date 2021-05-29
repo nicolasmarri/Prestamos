@@ -1,12 +1,38 @@
-import React, {Fragment, useState} from 'react';
+import React, { Fragment, useState } from 'react';
 import Header from './componentes/Header';
 import Formulario from './componentes/Formulario';
+import Resultado from './componentes/Resultado';
+import Mensaje from './componentes/Mensaje';
+import Spinner from './componentes/Spinner';
+
 
 function App() {
 
- //Definir el State
- const [cantidad, guardarCantidad] = useState(0)
- const [plazo, guardarPlazo] = useState(0)
+  //Definir el State
+  const [cantidad, guardarCantidad] = useState(0)
+  const [plazo, guardarPlazo] = useState('')
+  const [total, guardarTotal] = useState(0)
+  const [cargando, guardarCargando] = useState(false)
+
+  //Carga condicional de componentes
+
+  let componente;
+  if (cargando) {
+    componente = <Spinner />
+  } else if (total === 0) {
+    componente = <Mensaje />
+  } else {
+    if (cantidad === 0 || plazo === '') {
+      componente = <Mensaje />
+    } else {
+      componente = <Resultado
+        total={total}
+        plazo={plazo}
+        cantidad={cantidad}
+      />
+    }
+  }
+
   return (
     <Fragment>
       <Header
@@ -15,13 +41,19 @@ function App() {
 
       <div className="container">
         <Formulario
-          cantidad = {cantidad}
-          guardarCantidad = {guardarCantidad}
-          plazo = {plazo}
-          guardarPlazo = {guardarPlazo}
+          cantidad={cantidad}
+          guardarCantidad={guardarCantidad}
+          plazo={plazo}
+          guardarPlazo={guardarPlazo}
+          total={total}
+          guardarTotal={guardarTotal}
+          guardarCargando={guardarCargando}
         />
+        <div className="mensajes">
+          {componente}
+        </div>
       </div>
-      
+
     </Fragment>
   );
 }
